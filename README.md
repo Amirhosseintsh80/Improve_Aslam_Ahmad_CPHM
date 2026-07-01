@@ -1,12 +1,12 @@
-# Constrained Adaptive Shrinkage Estimation for the Cox Proportional Hazards Model
+# Constrained Adaptive Shrinkage Estimation for the Cox Model
 
 ## Introduction
 
-This repository contains the implementation of the simulation studies and real-data analyses presented in the accompanying paper on constrained adaptive shrinkage estimation for the Cox proportional hazards model.
+This repository contains the implementation of the simulation studies and real-data analyses presented in the accompanying paper on constrained adaptive shrinkage estimation for the Cox model.
 
 The proposed methodology combines variable selection with constrained estimation to improve estimation accuracy, particularly when prior information is available. The simulation study evaluates the performance of the proposed estimator under different sample sizes, correlation structures, sparsity levels, and censoring rates. Performance is compared using the Relative Average Absolute Error (RAAE), Average Absolute Loss (AALS), Average Absolute Shrinkage (AAS), and other evaluation criteria described in the paper.
 
-The repository also provides a framework for applying the proposed method to real survival datasets after verifying that the assumptions of the Cox proportional hazards model are satisfied.
+The repository also provides a framework for applying the proposed method to real survival datasets after verifying that the assumptions of the Cox model are satisfied.
 
 ---
 
@@ -43,7 +43,9 @@ p
 Example
 
 ```text
+p = 6
 p = 12
+p = 18
 ```
 
 ---
@@ -90,9 +92,7 @@ Modify the censoring parameter
 ```r
 tau
 ```
-
 Different values generate different censoring percentages used throughout the simulation study.
-
 ---
 
 ## 6. Number of Monte Carlo Replications
