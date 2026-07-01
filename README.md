@@ -276,8 +276,3 @@ Improved Aslam–Ahmad Estimation
         ▼
 Estimate Hazard Ratios and Evaluate Model Performance
 ```
-
-
-## Citation
-
-If you use this code in your research, please cite the accompanying paper.
