@@ -1,4 +1,4 @@
-# Constrained Adaptive Shrinkage Estimation for the Cox Model
+# Improved Aslam-Ahmad estimator in Cox regression model
 
 ## Introduction
 
