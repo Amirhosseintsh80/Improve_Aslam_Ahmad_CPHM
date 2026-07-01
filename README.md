@@ -1,80 +1,62 @@
-# Improved Aslam–Ahmad Estimator in the Cox Model
+# Improved Aslam–Ahmad Estimator for the Cox Proportional Hazards Model
 
-## Introduction
+## Overview
 
-This repository contains the implementation of the simulation studies and real-data analyses presented in the accompanying paper on the Improved Aslam–Ahmad estimator for the Cox model.
+This repository contains the R implementation of the **Improved Aslam–Ahmad estimator** for the Cox proportional hazards model, together with the simulation studies and real-data analysis presented in the accompanying paper.
 
-The proposed methodology extends the Improved Aslam–Ahmad shrinkage estimator to the Cox model by incorporating equality constraints derived from a preliminary variable selection procedure. The approach combines variable selection with constrained estimation to improve estimation accuracy, particularly in the presence of multicollinearity, sparse regression coefficients, and prior structural information.
+The proposed estimator extends the classical Improved Aslam–Ahmad shrinkage methodology to survival analysis by incorporating **linear equality restrictions** into the Cox proportional hazards model. The estimator combines unrestricted and restricted maximum partial likelihood estimators through a data-driven shrinkage mechanism, leading to improved estimation accuracy when reliable prior information is available.
 
-The simulation study evaluates the performance of the proposed estimator under different sample sizes, correlation structures, sparsity levels, and censoring rates. Performance is assessed using Relative Average Absolute Error (RAAE), Average Absolute Loss (AALS), Average Absolute Shrinkage (AAS), and other evaluation criteria described in the accompanying paper.
-
-This repository also provides a practical workflow for applying the proposed estimator to real survival datasets after verifying the assumptions of the Cox model.
+The simulation study evaluates the performance of the proposed estimator under various sample sizes, correlation structures, sparsity levels, and censoring rates. Estimation performance is assessed using Relative Average Absolute Error (RAAE), Average Absolute Loss (AALS), Average Absolute Shrinkage (AAS), and other performance measures introduced in the paper.
 
 ---
 
 # Methodology
 
-The proposed methodology extends the Improved Aslam–Ahmad estimator to the Cox model by integrating shrinkage estimation with equality-constrained estimation.
+Consider the Cox proportional hazards model
 
-Rather than relying solely on the unrestricted maximum partial likelihood estimator, the proposed approach incorporates structural information obtained from variable selection. Variables identified as inactive are treated as equality constraints, leading to a restricted estimator with reduced variance while maintaining satisfactory prediction performance.
+\[
+h(t|x)=h_0(t)\exp(x^\top\beta),
+\]
+
+where
+
+- \(h_0(t)\) is the unspecified baseline hazard function,
+- \(x\) is the vector of explanatory variables,
+- \(\beta\) denotes the regression coefficient vector.
+
+Suppose that prior information is available in the form of linear equality restrictions
+
+\[
+H\beta=h,
+\]
+
+where \(H\) is a known restriction matrix and \(h\) is a known constant vector.
 
 The proposed estimation procedure consists of the following steps:
 
-1. Fit the standard Cox model using all available covariates.
+1. Estimate the regression coefficients using the **Maximum Partial Likelihood Estimator (MPLE)**.
 
-2. Verify the adequacy of the fitted Cox model through goodness-of-fit diagnostics.
+2. Estimate the **Restricted Maximum Partial Likelihood Estimator (RMPLE)** under the specified linear equality restrictions.
 
-3. Assess the functional form of continuous covariates and apply suitable transformations if necessary.
+3. Compute the shrinkage parameter according to the Improved Aslam–Ahmad methodology.
 
-4. Perform variable selection using the LASSO Cox regression model.
+4. Combine the unrestricted and restricted estimators to obtain the **Improved Aslam–Ahmad estimator**.
 
-5. Identify regression coefficients that are shrunk exactly to zero.
-
-6. Construct the equality constraint matrix based on these inactive predictors.
-
-7. Compute the restricted maximum partial likelihood estimator under the specified linear constraints.
-
-8. Apply the Improved Aslam–Ahmad shrinkage estimator to obtain the final constrained estimator.
-
-This methodology combines data-driven variable selection with constrained estimation, resulting in improved estimation efficiency, especially in the presence of multicollinearity and high-dimensional covariates.
+The proposed estimator exploits available prior information while reducing estimation variance, resulting in improved finite-sample performance compared with conventional Cox regression estimators.
 
 ---
 
-# Limitations
+# Simulation Study
 
-Although the proposed estimator demonstrates favorable performance across a wide range of simulation settings, several limitations should be considered.
+The simulation study can be reproduced by modifying the following parameters.
 
-- The methodology assumes that the proportional hazards assumption of the Cox model is satisfied.
-
-- Adequate model fit should be verified before applying the proposed estimator.
-
-- Continuous covariates are assumed to have the appropriate functional form. Nonlinear effects should be modeled before estimation.
-
-- The quality of the final estimator depends on the variable selection procedure. Incorrect selection by LASSO may produce inappropriate equality constraints.
-
-- Equality constraints are treated as exact. If truly important variables are incorrectly constrained to zero, estimation bias may increase.
-
-- The proposed estimator is designed for linear equality constraints and is not directly applicable to nonlinear constraint structures.
-
-- Performance may deteriorate under extremely high censoring rates or very small sample sizes.
-
-- The simulation study considers predefined correlation structures, sparsity levels, and sample sizes. Additional studies are required to evaluate performance under more complex data-generating mechanisms.
-
-- The methodology assumes independent observations and does not directly address clustered survival data, recurrent events, or time-dependent covariates.
-
----
-
-# Reproducing the Simulation Study
-
-The simulation scripts are fully parameterized. To reproduce the results reported in the paper or conduct additional experiments, modify the following parameters.
-
-## 1. Sample Size
+## Sample Size
 
 ```r
 n
 ```
 
-Typical values:
+Typical values
 
 ```text
 50
@@ -84,13 +66,13 @@ Typical values:
 
 ---
 
-## 2. Number of Covariates
+## Number of Covariates
 
 ```r
 p
 ```
 
-Example values:
+Typical values
 
 ```text
 6
@@ -100,15 +82,13 @@ Example values:
 
 ---
 
-## 3. Sparsity Level
-
-Specify the proportion of truly non-zero regression coefficients.
+## Sparsity Level
 
 ```r
 cp
 ```
 
-Examples:
+Typical values
 
 ```text
 0.30
@@ -117,13 +97,13 @@ Examples:
 
 ---
 
-## 4. Correlation Between Covariates
+## Correlation Between Covariates
 
 ```r
 rho
 ```
 
-Typical values:
+Typical values
 
 ```text
 0.50
@@ -133,149 +113,134 @@ Typical values:
 
 ---
 
-## 5. Censoring Level
-
-Modify
+## Censoring Level
 
 ```r
 tau
 ```
 
-Different values generate different censoring percentages used throughout the simulation study.
+Different values generate different censoring rates.
 
 ---
 
-## 6. Number of Monte Carlo Replications
-
-Modify
+## Number of Monte Carlo Replications
 
 ```r
 N.sim
 ```
 
-to increase or decrease the number of simulation replications.
-
 ---
 
-## 7. Regression Coefficients
-
-Specify the true coefficient vector
+## True Regression Coefficients
 
 ```r
 beta
 ```
 
-Users may define any sparse or dense coefficient configuration.
-
 ---
 
-## 8. Random Seed
-
-For reproducibility,
+## Random Seed
 
 ```r
 set.seed(...)
 ```
 
-may be changed to generate independent simulation runs.
+---
+
+Simulation performance is evaluated using
+
+- Relative Average Absolute Error (RAAE)
+- Average Absolute Loss (AALS)
+- Average Absolute Shrinkage (AAS)
+
+and the additional performance measures presented in the paper.
 
 ---
 
-# Applying the Method to Real Data
+# Real Data Analysis
 
-Before applying the Improved Aslam–Ahmad estimator, the assumptions of the Cox proportional hazards model should be carefully evaluated.
+The proposed estimator should only be applied after verifying that the Cox proportional hazards model is appropriate for the observed data.
 
 ## Step 1. Fit the Standard Cox Model
 
-Fit the ordinary Cox proportional hazards model using all candidate predictors.
+Fit the ordinary Cox proportional hazards model using all available predictors.
 
 ---
 
-## Step 2. Assess Overall Model Adequacy
+## Step 2. Assess Model Adequacy
 
-Evaluate whether the Cox model adequately represents the observed survival data.
+Evaluate the overall goodness-of-fit using appropriate diagnostic procedures such as
 
-Recommended diagnostic methods include:
+- Cox–Snell residuals,
+- Martingale residuals,
+- Deviance residuals,
+- or other suitable goodness-of-fit methods.
 
-- Cox–Snell residual analysis
-- Deviance residual plots
-- Martingale residual diagnostics
-- Other appropriate goodness-of-fit procedures
-
-Proceed only if the Cox model demonstrates an acceptable fit.
+Proceed only if the Cox model adequately fits the observed data.
 
 ---
 
 ## Step 3. Check the Functional Form of Continuous Covariates
 
-Verify the linearity assumption for continuous predictors.
+Assess the linearity assumption using methods such as
 
-Common approaches include:
+- Martingale residual plots,
+- Restricted cubic splines,
+- Fractional polynomial models.
 
-- Martingale residual plots
-- Restricted cubic splines
-- Fractional polynomial models
-- Component-plus-residual diagnostics
-
-If nonlinear relationships are detected, appropriate transformations or spline functions should be incorporated before variable selection.
+Transform nonlinear covariates when necessary.
 
 ---
 
 ## Step 4. Variable Selection
 
-After confirming model adequacy, perform variable selection using the LASSO Cox regression model.
+Fit a **LASSO Cox regression model**.
 
-```text
-LASSO Cox Regression
-```
-
-Predictors with non-zero estimated coefficients are retained.
-
-Predictors whose coefficients shrink exactly to zero are regarded as inactive variables.
+Predictors with coefficients estimated as exactly zero are regarded as inactive variables.
 
 ---
 
-## Step 5. Construct the Equality Constraint Matrix
+## Step 5. Construct Linear Equality Restrictions
 
-Use the LASSO results to construct the restriction matrix.
+Use the inactive variables identified by LASSO to construct the restriction matrix.
 
-- Variables selected by LASSO remain unrestricted.
-- Variables with zero coefficients are treated as equality constraints.
-
-These constraints define the restricted parameter space for the proposed estimator.
+Regression coefficients estimated as zero are imposed as linear equality constraints in the restricted Cox model.
 
 ---
 
 ## Step 6. Estimate the Improved Aslam–Ahmad Estimator
 
-Fit the proposed estimator using
+Using the constructed restriction matrix,
 
-- the survival outcome,
-- the selected predictors,
-- and the equality constraint matrix.
-
-The resulting estimator combines restricted maximum partial likelihood estimation with adaptive shrinkage.
+- compute the Restricted Maximum Partial Likelihood Estimator (RMPLE),
+- estimate the shrinkage parameter,
+- obtain the Improved Aslam–Ahmad estimator.
 
 ---
 
-## Step 7. Evaluate the Final Model
+## Step 7. Model Evaluation
 
 Report
 
-- regression coefficient estimates,
-- hazard ratios,
-- confidence intervals,
-- prediction accuracy,
-- and all performance measures considered in the accompanying paper.
+- Regression coefficient estimates,
+- Hazard ratios,
+- Confidence intervals,
+- Prediction performance,
+- Model comparison with competing estimators.
 
-Comparisons may be performed against
+---
 
-- Standard Cox Regression
-- Ridge Cox Regression
-- LASSO Cox Regression
-- Adaptive LASSO
-- Elastic Net Cox Regression
-- Other competing estimators.
+# Limitations
+
+The proposed estimator is subject to the following limitations.
+
+- The proportional hazards assumption must be satisfied.
+- The validity of the estimator depends on correctly specified linear equality restrictions.
+- Incorrect restrictions may introduce estimation bias.
+- The proposed methodology is designed only for linear equality constraints.
+- Performance may deteriorate under extremely high censoring rates or very small sample sizes.
+- The method assumes independent survival observations.
+- Clustered survival data, recurrent events, and time-dependent covariates are beyond the scope of the current implementation.
 
 ---
 
@@ -300,16 +265,19 @@ LASSO Cox Variable Selection
 Identify Zero Coefficients
         │
         ▼
-Construct Equality Constraints
+Construct Linear Equality Restrictions
         │
         ▼
-Restricted Maximum Partial Likelihood Estimation
+Restricted Maximum Partial Likelihood Estimation (RMPLE)
         │
         ▼
 Improved Aslam–Ahmad Estimation
         │
         ▼
-Estimate Hazard Ratios and Evaluate Performance
+Estimate Hazard Ratios and Evaluate Model Performance
 ```
 
-This workflow ensures that the Improved Aslam–Ahmad estimator is applied only after validating the Cox proportional hazards model assumptions and constructing reliable equality constraints from the variable selection stage.
+
+## Citation
+
+If you use this code in your research, please cite the accompanying paper.
